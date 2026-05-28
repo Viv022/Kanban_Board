@@ -1,9 +1,10 @@
 import "./App.css";
-import { listStore } from "./store/listStore";
+import Board from "./components/Board";
+import { useKanbanStore } from "./store/useKanbanStore";
 
 function App() {
-  console.log(listStore.getState());
-  return <h1>Hello World!</h1>;
+  console.log(useKanbanStore.getState());
+  return <Board boardId="board-1" />;
 }
 
 export default App;

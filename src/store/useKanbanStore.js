@@ -1,6 +1,6 @@
 import { create } from "zustand"; //it's a hook
 
-export const listStore = create((set) => ({
+export const useKanbanStore = create((set) => ({
   boards: [
     {
       id: "board-1",
@@ -9,8 +9,8 @@ export const listStore = create((set) => ({
     // { id: "board-2", title: "Personal works" },
   ],
   lists: [
-    { id: "list - 1", boardId: "board-1", title: "To do", order: 0 },
-    { id: "list - 2", boardId: "board-2", title: "To do", order: 0 },
+    { id: "list-1", boardId: "board-1", title: "Mario Kart", order: 0 },
+    { id: "list-2", boardId: "board-1", title: "Rocket League", order: 0 },
   ],
 
   cards: [
@@ -31,7 +31,7 @@ export const listStore = create((set) => ({
       order: 0,
     },
     {
-      id: "card-1",
+      id: "card-3",
       listId: "list-1",
       title: "Go Viv rawr",
       content: "There we go",
@@ -39,7 +39,7 @@ export const listStore = create((set) => ({
       order: 0,
     },
     {
-      id: "card-2",
+      id: "card-4",
       listId: "list-2",
       title: "Good time",
       content: "Too good to be true",
