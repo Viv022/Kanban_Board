@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useKanbanStore } from "../store/useKanbanStore";
 import Card from "./Card";
+import AddCardForm from "./AddCardForm";
 
 function List({ listId }) {
   const list = useKanbanStore((state) =>
@@ -22,11 +23,13 @@ function List({ listId }) {
   console.log(cards);
 
   return (
-    <div className="flex flex-col gap-3 p-2 bg-gray-100 rounded-lg">
+    <div className="flex flex-col gap-3 p-2 bg-gray-100 rounded-lg min-w-70 w-70 shrink-0">
       <h2 className="font-bold text-gray-700 px-2">{title}</h2>
       {cards.map((card) => (
         <Card key={card.id} cardId={card.id} />
       ))}
+
+      <AddCardForm listId={listId} />
     </div>
   );
 }

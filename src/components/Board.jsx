@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useKanbanStore } from "../store/useKanbanStore";
 import List from "./List";
+import AddListForm from "./AddListForm";
 
 function Board({ boardId }) {
   //the board knows only about lists!
@@ -25,11 +26,10 @@ function Board({ boardId }) {
       {lists.map((list) => (
         <List key={list.id} listId={list.id} />
       ))}
+
+      <AddListForm boardId={boardId} />
     </div>
   );
-
-  //Board
-  //List1 //List2 //List3 .....
 }
 
 export default Board;

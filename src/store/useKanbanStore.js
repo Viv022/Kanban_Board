@@ -68,6 +68,7 @@ export const useKanbanStore = create((set) => ({
           listId,
           title: title,
           content: "",
+          priority: "default",
           order: state.cards.filter((c) => c.listId === listId).length,
         },
       ],
@@ -75,7 +76,7 @@ export const useKanbanStore = create((set) => ({
 
   removeCard: (cardId) =>
     set((state) => {
-      const cardToDelete = state.cards.find((c) => c.cardId == cardId);
+      const cardToDelete = state.cards.find((c) => c.id === cardId);
 
       if (!cardToDelete) return state;
 
@@ -83,7 +84,7 @@ export const useKanbanStore = create((set) => ({
 
       return {
         cards: state.cards
-          .filter((card) => card.cardId != cardId)
+          .filter((card) => card.id != cardId)
           .map((card) => {
             if (card.listId !== listId || card.order < order) return card;
 
@@ -92,13 +93,13 @@ export const useKanbanStore = create((set) => ({
       };
     }),
 
-  upDateCard: (cardId, content) =>
+  updateCard: (cardId, content) =>
     set((state) => {
       //find card by Id then update the card content
 
       return {
         cards: state.cards.map((card) => {
-          if (cardId !== card.cardId) return card;
+          if (cardId !== card.id) return card;
 
           return { ...card, content: content };
         }),
@@ -107,7 +108,7 @@ export const useKanbanStore = create((set) => ({
 
   moveCard: (cardId, newListId) =>
     set((state) => {
-      const cardToMove = state.cards.find((card) => card.cardId == cardId);
+      const cardToMove = state.cards.find((card) => card.id == cardId);
 
       if (!cardToMove) return state;
 
@@ -121,7 +122,7 @@ export const useKanbanStore = create((set) => ({
 
       return {
         cards: state.cards.map((card) => {
-          if (card.cardId === cardId)
+          if (card.id === cardId)
             return { ...card, listId: newListId, order: newOrder };
 
           if (card.listId == oldListId && card.order > order)
@@ -131,4 +132,17 @@ export const useKanbanStore = create((set) => ({
         }),
       };
     }),
+
+  addList: (boardId, title) =>
+    set((state) => ({
+      lists: [
+        ...state.lists,
+        {
+          id: crypto.randomUUID(),
+          boardId,
+          title,
+          order: state.lists.filter((l) => l.boardId === boardId).length,
+        },
+      ],
+    })),
 }));

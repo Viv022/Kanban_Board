@@ -1,9 +1,12 @@
 import { useKanbanStore } from "../store/useKanbanStore";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 function Card({ cardId }) {
   const card = useKanbanStore((state) =>
     state.cards.find((card) => card.id === cardId),
   );
+
+  const removeCard = useKanbanStore((state) => state.removeCard);
 
   if (!card) return null;
 
@@ -26,13 +29,23 @@ function Card({ cardId }) {
 
   return (
     <div
-      className={`card-container p-4 mb-3 rounded shadow-sm ${getPriorityStyle()}`}
+      className={`card-container relative group p-4 mb-3 bg-white rounded shadow-sm ${getPriorityStyle()}`}
     >
       <div>
         <span className="text-xs font-bold uppercase tracking-wider">
           {priority}
         </span>
       </div>
+
+      <button
+        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 hidden group-hover:block text-xs font-bold p-1"
+        onClick={(e) => {
+          e.stopPropagation();
+          removeCard(cardId);
+        }}
+      >
+        <FaRegTrashCan />
+      </button>
 
       <div className="card-body">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
