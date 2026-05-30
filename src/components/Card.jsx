@@ -1,6 +1,9 @@
 import { useKanbanStore } from "../store/useKanbanStore";
 import { FaRegTrashCan } from "react-icons/fa6";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 function Card({ cardId }) {
   const card = useKanbanStore((state) =>
     state.cards.find((card) => card.id === cardId),
@@ -8,12 +11,18 @@ function Card({ cardId }) {
 
   const removeCard = useKanbanStore((state) => state.removeCard);
 
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: cardId,
+      data: { listId: card?.listId, order: card?.order },
+    });
+
   if (!card) return null;
 
   const { title, priority, content } = card;
 
-  console.log(title, priority, content);
-  console.log("hello \n");
+  // console.log(title, priority, content);
+  // console.log("hello \n");
 
   const priorityStyles = {
     high: "border-l-4 border-red-500 bg-red-50 text-red-700",
@@ -27,8 +36,19 @@ function Card({ cardId }) {
     return priorityStyles[normalizedPriority] || priorityStyles.default;
   }
 
+  const style = transform
+    ? {
+        transform: CSS.Translate.toString(transform),
+        transition,
+      }
+    : undefined;
+
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       className={`card-container relative group p-4 mb-3 bg-white rounded shadow-sm ${getPriorityStyle()}`}
     >
       <div>

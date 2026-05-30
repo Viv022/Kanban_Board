@@ -106,28 +106,56 @@ export const useKanbanStore = create((set) => ({
       };
     }),
 
-  moveCard: (cardId, newListId) =>
+  moveCard: (cardId, newListId, newOrder) =>
     set((state) => {
       const cardToMove = state.cards.find((card) => card.id == cardId);
 
       if (!cardToMove) return state;
 
-      const { listId: oldListId, order } = cardToMove;
+      const { listId: oldListId, order: oldOrder } = cardToMove;
 
-      if (newListId === oldListId) return state;
+      if (oldListId !== newListId) {
+        //moving to different lists!
+        return {
+          cards: state.cards.map((card) => {
+            if (card.listId === oldListId && card.order > oldOrder)
+              return { ...card, order: card.order - 1 };
 
-      const newOrder = state.cards.filter(
-        (card) => card.listId == newListId,
-      ).length;
+            if (card.listId === newListId && card.order >= newOrder)
+              return { ...card, order: card.order + 1 };
+
+            if (card.id === cardId) {
+              return { ...card, listId: newListId, order: newOrder };
+            }
+
+            return card;
+          }),
+        };
+      }
 
       return {
+        //moving to same list!
         cards: state.cards.map((card) => {
-          if (card.id === cardId)
-            return { ...card, listId: newListId, order: newOrder };
-
-          if (card.listId == oldListId && card.order > order)
+          if (card.listId !== newListId) return card;
+          if (card.id === cardId) {
+            return { ...card, order: newOrder };
+          }
+          if (
+            // 1 -> 4
+            oldOrder < newOrder &&
+            card.order > oldOrder &&
+            card.order <= newOrder
+          ) {
             return { ...card, order: card.order - 1 };
-
+          }
+          if (
+            //7 -> 5
+            oldOrder > newOrder &&
+            card.order < oldOrder &&
+            card.order >= newOrder
+          ) {
+            return { ...card, order: card.order + 1 };
+          }
           return card;
         }),
       };

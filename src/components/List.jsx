@@ -2,6 +2,11 @@ import { useMemo } from "react";
 import { useKanbanStore } from "../store/useKanbanStore";
 import Card from "./Card";
 import AddCardForm from "./AddCardForm";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 function List({ listId }) {
   const list = useKanbanStore((state) =>
@@ -9,6 +14,8 @@ function List({ listId }) {
   );
 
   const allCards = useKanbanStore((state) => state.cards);
+
+  const { setNodeRef } = useDroppable({ id: listId });
 
   const cards = useMemo(() => {
     return allCards
@@ -22,12 +29,19 @@ function List({ listId }) {
 
   console.log(cards);
 
+  const cardIds = cards.map((card) => card.id);
+
   return (
-    <div className="flex flex-col gap-3 p-2 bg-gray-100 rounded-lg min-w-70 w-70 shrink-0">
+    <div
+      ref={setNodeRef}
+      className="flex flex-col gap-3 p-2 bg-gray-100 rounded-lg min-w-70 w-70 shrink-0"
+    >
       <h2 className="font-bold text-gray-700 px-2">{title}</h2>
-      {cards.map((card) => (
-        <Card key={card.id} cardId={card.id} />
-      ))}
+      <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
+        {cards.map((card) => (
+          <Card key={card.id} cardId={card.id} />
+        ))}
+      </SortableContext>
 
       <AddCardForm listId={listId} />
     </div>
